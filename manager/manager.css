@@ -14,6 +14,9 @@
   --color-duplicate: #c4944a;
   --color-duplicate-bg: #faf3e6;
   --color-duplicate-border: #d4ad5e;
+  --color-duplicate-cross: #7b8fa8;
+  --color-duplicate-cross-bg: #eef2f7;
+  --color-duplicate-cross-border: #a8bdd0;
   --color-success: #7a9e6b;
   --color-success-bg: #eef4eb;
   --color-danger: #b8706a;
@@ -130,14 +133,17 @@ body {
   margin-top: var(--header-height);
   min-height: calc(100vh - var(--header-height));
 }
-.tab-panel { flex: 1; padding: var(--space-5); overflow-y: auto; }
+.tab-panel { flex: 1; padding: var(--space-5); overflow-y: auto; position: relative; }
 
 /* === Empty States === */
 .empty-state {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: var(--space-8) var(--space-4); color: var(--color-fg-muted);
+  pointer-events: none;
 }
-.empty-icon { font-size: 48px; margin-bottom: var(--space-4); opacity: 0.6; }
 .empty-text { font-size: var(--text-base); color: var(--color-fg-subtle); }
 
 /* === Window Group (Card Container) === */
@@ -215,9 +221,16 @@ body {
 .tab-card.duplicate::before {
   background: var(--dup-color, var(--color-duplicate-border));
 }
-.tab-card.duplicate {
+.tab-card.duplicate.dup-window {
   background: var(--color-duplicate-bg);
   border-color: var(--color-duplicate-border);
+}
+.tab-card.duplicate.dup-cross {
+  background: var(--color-duplicate-cross-bg);
+  border-color: var(--color-duplicate-cross-border);
+}
+.tab-card.duplicate.dup-cross::before {
+  background: var(--dup-color, var(--color-duplicate-cross-border));
 }
 
 .tab-card-header {
@@ -257,14 +270,24 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: auto;
   padding-top: var(--space-2);
+  gap: var(--space-1);
+  flex-wrap: wrap;
 }
 
 .dup-badge {
-  font-size: var(--text-xs); color: var(--color-duplicate);
-  background: var(--color-duplicate-bg);
-  border: 1px solid var(--color-duplicate-border);
+  font-size: var(--text-xs);
   padding: 1px 7px; border-radius: var(--radius-full);
   font-weight: var(--font-medium);
+}
+.dup-badge-window {
+  color: var(--color-duplicate);
+  background: var(--color-duplicate-bg);
+  border: 1px solid var(--color-duplicate-border);
+}
+.dup-badge-cross {
+  color: var(--color-duplicate-cross);
+  background: var(--color-duplicate-cross-bg);
+  border: 1px solid var(--color-duplicate-cross-border);
 }
 
 .tab-actions {
@@ -292,6 +315,7 @@ body {
   border-left: 1px solid var(--color-border);
   background: var(--color-card);
   display: flex; flex-direction: column; overflow-y: auto;
+  position: relative;
   transition: width var(--duration-normal) var(--easing-default);
 }
 .todo-drawer[hidden] { display: none; }
@@ -319,7 +343,7 @@ body {
 .btn-text:focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 2px; }
 
 .flower-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: var(--z-confetti); overflow: hidden; }
-.toast-container { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--space-2); z-index: var(--z-toast); }
+.toast-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: var(--space-2); z-index: var(--z-toast); }
 
 .toast {
   padding: var(--space-2) var(--space-4);
@@ -374,6 +398,32 @@ body {
 .todo-item-btn.delete:hover { color: var(--color-danger); background: var(--color-danger-bg); }
 .todo-item-btn:focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 1px; }
 .todo-item.status-done .todo-item-title { text-decoration: line-through; color: var(--color-fg-subtle); }
+
+/* === Instant Tooltip === */
+[data-tip] {
+  position: relative;
+}
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  background: var(--color-fg);
+  color: var(--color-card);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 80ms var(--easing-default);
+  z-index: 40;
+}
+[data-tip]:hover::after {
+  opacity: 1;
+}
 
 /* === Flower Bloom === */
 .petal {

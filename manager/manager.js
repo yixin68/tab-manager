@@ -3,8 +3,8 @@
 const DUPLICATE_COLORS = ['#f59e0b', '#8b5cf6', '#06b6d4', '#f43f5e', '#84cc16', '#f97316'];
 
 let allTabs = [];
-let duplicateMap = {};
-let duplicateColorMap = {};
+let duplicateMap = {};      // url → { global: count, windows: { windowId: count } }
+let duplicateColorMap = {};  // url → color
 let searchQuery = '';
 let drawerOpen = false;
 let todoActiveTab = 'todo';
@@ -13,18 +13,20 @@ let todoItems = [];
 // === Duplicate Detection ===
 
 function computeDuplicates(tabs) {
-  const urlCount = {};
+  const urlByWindow = {};
   tabs.forEach(t => {
     if (t.url.startsWith('chrome-extension://')) return;
-    urlCount[t.url] = (urlCount[t.url] || 0) + 1;
+    if (!urlByWindow[t.url]) urlByWindow[t.url] = {};
+    urlByWindow[t.url][t.windowId] = (urlByWindow[t.url][t.windowId] || 0) + 1;
   });
 
   duplicateMap = {};
   duplicateColorMap = {};
   let colorIndex = 0;
-  for (const [url, count] of Object.entries(urlCount)) {
-    if (count > 1) {
-      duplicateMap[url] = count;
+  for (const [url, windows] of Object.entries(urlByWindow)) {
+    const globalCount = Object.values(windows).reduce((s, c) => s + c, 0);
+    if (globalCount > 1) {
+      duplicateMap[url] = { global: globalCount, windows };
       duplicateColorMap[url] = DUPLICATE_COLORS[colorIndex % DUPLICATE_COLORS.length];
       colorIndex++;
     }
@@ -73,22 +75,31 @@ function renderTabs() {
     if (filtered.length === 0) continue;
     hasResults = true;
 
-    const hasDups = filtered.some(t => duplicateMap[t.url]);
+    const hasWindowDups = filtered.some(t => {
+      const d = duplicateMap[t.url];
+      return d && (d.windows[t.windowId] || 0) > 1;
+    });
+    const hasCrossWindowDups = filtered.some(t => {
+      const d = duplicateMap[t.url];
+      return d && Object.keys(d.windows).length > 1;
+    });
 
     windowIndex++;
     html += `<div class="window-group" data-window-id="${windowId}">`;
     html += `<div class="window-header" data-action="toggle-window">`;
     html += `<div class="window-title"><span class="window-arrow">▼</span> 窗口 ${windowIndex} (${filtered.length}个标签)</div>`;
-    if (hasDups) {
+    if (hasWindowDups) {
       html += `<button class="close-dup-btn" data-action="close-duplicates" data-window-id="${windowId}">关闭重复项</button>`;
     }
     html += `</div>`;
     html += `<div class="window-body">`;
 
     filtered.forEach(tab => {
-      const isDup = !!duplicateMap[tab.url];
+      const dupInfo = duplicateMap[tab.url];
+      const isDup = !!dupInfo;
       const dupColor = isDup ? duplicateColorMap[tab.url] : '';
-      const dupCount = duplicateMap[tab.url] || 0;
+      const isWindowDup = isDup && (dupInfo.windows[tab.windowId] || 0) > 1;
+      const isCrossWindowDup = isDup && Object.keys(dupInfo.windows).length > 1;
 
       let favicon = '';
       if (tab.favIconUrl && !tab.url.startsWith('chrome://')) {
@@ -97,7 +108,8 @@ function renderTabs() {
         favicon = `<div class="tab-favicon-placeholder">${getFirstLetter(tab.title)}</div>`;
       }
 
-      html += `<div class="tab-card${isDup ? ' duplicate' : ''}" data-tab-id="${tab.id}" style="--dup-color:${dupColor}" tabindex="0" role="listitem" aria-label="标签页: ${escapeHtml(tab.title)}, ${escapeHtml(tab.url)}">`;
+      const dupClass = isWindowDup ? ' duplicate dup-window' : isCrossWindowDup ? ' duplicate dup-cross' : isDup ? ' duplicate' : '';
+      html += `<div class="tab-card${dupClass}" data-tab-id="${tab.id}" style="--dup-color:${dupColor}" tabindex="0" role="listitem" aria-label="标签页: ${escapeHtml(tab.title)}, ${escapeHtml(tab.url)}">`;
       html += `<div class="tab-card-header">`;
       html += favicon;
       html += `<div class="tab-info" data-action="activate-tab" data-tab-id="${tab.id}">`;
@@ -106,14 +118,22 @@ function renderTabs() {
       html += `</div>`;
       html += `</div>`;
       html += `<div class="tab-card-footer">`;
-      if (isDup) {
-        html += `<span class="dup-badge">重复×${dupCount}</span>`;
+      if (isWindowDup && isCrossWindowDup) {
+        const windowCount = dupInfo.windows[tab.windowId];
+        const crossCount = Object.keys(dupInfo.windows).length;
+        html += `<span class="dup-badge dup-badge-window">窗口内×${windowCount}</span><span class="dup-badge dup-badge-cross">跨${crossCount}窗口</span>`;
+      } else if (isWindowDup) {
+        const windowCount = dupInfo.windows[tab.windowId];
+        html += `<span class="dup-badge dup-badge-window">窗口内重复×${windowCount}</span>`;
+      } else if (isCrossWindowDup) {
+        const crossCount = Object.keys(dupInfo.windows).length;
+        html += `<span class="dup-badge dup-badge-cross">跨${crossCount}个窗口重复</span>`;
       } else {
         html += `<span></span>`;
       }
       html += `<div class="tab-actions">`;
-      html += `<button class="tab-action-btn todo-btn" data-action="save-todo" data-tab-id="${tab.id}" aria-label="存为待办" title="存为待办，并关闭标签页">📌</button>`;
-      html += `<button class="tab-action-btn close-btn" data-action="close-tab" data-tab-id="${tab.id}" aria-label="关闭标签页" title="关闭标签页">✕</button>`;
+      html += `<button class="tab-action-btn todo-btn" data-action="save-todo" data-tab-id="${tab.id}" aria-label="存为待办" data-tip="存为待办，并关闭标签页">📌</button>`;
+      html += `<button class="tab-action-btn close-btn" data-action="close-tab" data-tab-id="${tab.id}" aria-label="关闭标签页" data-tip="关闭标签页">✕</button>`;
       html += `</div>`;
       html += `</div>`;
       html += `</div>`;
@@ -265,9 +285,9 @@ function renderTodoList() {
         <div class="todo-item-time">${timeAgo(item.createdAt)}</div>
       </div>
       <div class="todo-item-actions">
-        <button class="todo-item-btn reopen" data-action="reopen-todo" data-todo-id="${item.id}" aria-label="重新打开" title="重新打开">↗</button>
-        <button class="todo-item-btn done" data-action="mark-done" data-todo-id="${item.id}" aria-label="标记完成" title="标记完成">✓</button>
-        <button class="todo-item-btn delete" data-action="delete-todo" data-todo-id="${item.id}" aria-label="删除" title="删除">🗑</button>
+        <button class="todo-item-btn reopen" data-action="reopen-todo" data-todo-id="${item.id}" aria-label="重新打开" data-tip="重新打开">↗</button>
+        <button class="todo-item-btn done" data-action="mark-done" data-todo-id="${item.id}" aria-label="标记完成" data-tip="标记完成">✓</button>
+        <button class="todo-item-btn delete" data-action="delete-todo" data-todo-id="${item.id}" aria-label="删除" data-tip="删除">🗑</button>
       </div>
     </div>
   `).join('');
