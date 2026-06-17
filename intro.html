@@ -37,10 +37,34 @@
       line-height: 1.7;
     }
 
+    /* Nav bar */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 52px;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px;
+      z-index: 100;
+      padding: 0 16px;
+    }
+    .nav-link {
+      font-size: 13px; font-weight: 500;
+      color: var(--color-fg-muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: background 150ms, color 150ms;
+    }
+    .nav-link:hover { background: var(--color-bg); color: var(--color-fg); }
+    .nav-link.active { background: var(--color-accent-light); color: var(--color-accent); }
+
     /* Hero */
     .hero {
       text-align: center;
-      padding: 80px 24px 60px;
+      padding: 100px 24px 48px;
       background: linear-gradient(180deg, #faf7f2 0%, #f5f0e8 100%);
     }
     .hero-icon {
@@ -64,14 +88,14 @@
 
     /* Sections */
     .section {
-      max-width: 860px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 60px 24px;
+      padding: 36px 32px;
     }
     .section-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
       text-align: center;
       letter-spacing: -0.01em;
     }
@@ -80,8 +104,8 @@
     .feature-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 720px;
+      gap: 16px;
+      max-width: 860px;
       margin: 0 auto;
     }
     @media (max-width: 640px) {
@@ -91,7 +115,7 @@
       background: var(--color-card);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
-      padding: 28px 24px;
+      padding: 22px 20px;
       box-shadow: var(--shadow-card);
       transition: box-shadow 200ms, transform 200ms;
     }
@@ -125,7 +149,7 @@
 
     /* Screenshot mockups */
     .mockup-container {
-      margin: 40px 0;
+      margin: 28px 0;
     }
     .mockup {
       background: var(--color-card);
@@ -443,9 +467,7 @@
     .steps {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      max-width: 640px;
-      margin: 0 auto;
+      gap: 20px;
     }
     .step {
       display: flex;
@@ -600,8 +622,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
-      max-width: 600px;
-      margin: 0 auto;
     }
     .shortcut-item {
       display: flex;
@@ -631,9 +651,9 @@
     /* Footer */
     .footer {
       text-align: center;
-      padding: 40px 24px;
+      padding: 28px 24px;
       border-top: 1px solid var(--color-border);
-      margin-top: 40px;
+      margin-top: 20px;
     }
     .footer p {
       font-size: 13px;
@@ -644,25 +664,84 @@
     .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 20px;
       align-items: start;
     }
     @media (max-width: 640px) {
       .two-col { grid-template-columns: 1fr; }
     }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 60px; }
   </style>
 </head>
 <body>
 
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a class="nav-link" href="#features">核心功能</a>
+    <a class="nav-link" href="#preview">界面预览</a>
+    <a class="nav-link" href="#install">安装方法</a>
+    <a class="nav-link" href="#guide">使用指南</a>
+    <a class="nav-link" href="#shortcuts">快捷键</a>
+  </nav>
+
   <!-- Hero -->
   <section class="hero">
-    <img src="icons/icon-128.png" alt="标签管理" class="hero-icon">
+    <!-- Hero icon: SVG preview — cute character with stacked tabs -->
+    <svg class="hero-icon" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="4" width="120" height="120" rx="22" fill="#f5f0e8"/>
+
+      <!-- Stacked tabs behind character -->
+      <!-- Back tab -->
+      <rect x="18" y="18" width="74" height="58" rx="8" fill="#d9d2c6" stroke="#c4b8a6" stroke-width="1.5"/>
+      <rect x="19" y="19" width="72" height="15" rx="7" fill="#c4b8a6"/>
+
+      <!-- Middle tab -->
+      <rect x="27" y="27" width="74" height="58" rx="8" fill="#ede7db" stroke="#d9d2c6" stroke-width="1.5"/>
+      <rect x="28" y="28" width="72" height="15" rx="7" fill="#d9d2c6"/>
+
+      <!-- Front tab -->
+      <rect x="36" y="36" width="74" height="58" rx="8" fill="#faf7f2" stroke="#d9d2c6" stroke-width="1.5"/>
+      <rect x="37" y="37" width="72" height="15" rx="7" fill="#b89060"/>
+      <!-- Favicon dot on tab -->
+      <circle cx="49" cy="44.5" r="3.5" fill="#fde8c8"/>
+      <!-- Title lines -->
+      <rect x="57" y="42" width="32" height="2.5" rx="1.25" fill="#d4c4a8"/>
+      <rect x="57" y="47" width="24" height="2" rx="1" fill="#d4c4a8" opacity="0.6"/>
+      <!-- Content lines -->
+      <rect x="46" y="60" width="42" height="2" rx="1" fill="#d9d2c6"/>
+      <rect x="46" y="66" width="35" height="2" rx="1" fill="#d9d2c6"/>
+      <rect x="46" y="72" width="28" height="2" rx="1" fill="#d9d2c6"/>
+      <!-- Green checkmark badge -->
+      <circle cx="103" cy="46" r="8" fill="#7a9e6b"/>
+      <path d="M99 46l2.5 3 5-5.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+      <!-- Cute character peeking from behind -->
+      <!-- Body -->
+      <ellipse cx="78" cy="98" rx="20" ry="22" fill="#b89060"/>
+      <!-- Face -->
+      <circle cx="78" cy="88" r="14" fill="#ffe0c0"/>
+      <!-- Eyes -->
+      <ellipse cx="73" cy="86" rx="2.5" ry="3" fill="#3d3832"/>
+      <ellipse cx="83" cy="86" rx="2.5" ry="3" fill="#3d3832"/>
+      <!-- Eye highlights -->
+      <circle cx="74" cy="85" r="1" fill="white" opacity="0.8"/>
+      <circle cx="84" cy="85" r="1" fill="white" opacity="0.8"/>
+      <!-- Smile -->
+      <path d="M73 91 Q78 96 83 91" stroke="#c07060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <!-- Blush -->
+      <ellipse cx="69" cy="91" rx="4" ry="2.5" fill="#ffb0a0" opacity="0.4"/>
+      <ellipse cx="87" cy="91" rx="4" ry="2.5" fill="#ffb0a0" opacity="0.4"/>
+      <!-- Little arms holding tab -->
+      <path d="M62 95 Q56 92 58 86" stroke="#b89060" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M94 95 Q100 92 98 86" stroke="#b89060" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </svg>
     <h1>标签管理</h1>
     <p>一目了然管理浏览器标签页，智能检测重复，告别标签混乱</p>
   </section>
 
   <!-- Features — only 3 core features -->
-  <section class="section">
+  <section class="section" id="features">
     <h2 class="section-title">核心功能</h2>
     <div class="feature-grid">
       <div class="feature-card">
@@ -698,7 +777,7 @@
   </section>
 
   <!-- Screenshot: Main interface -->
-  <section class="section">
+  <section class="section" id="preview">
     <h2 class="section-title">界面预览</h2>
 
     <div class="mockup">
@@ -902,56 +981,22 @@
             <div class="mockup-dot yellow"></div>
             <div class="mockup-dot green"></div>
           </div>
-          <div class="mockup-body" style="padding: 16px;">
-            <div class="mock-drawer">
-              <div class="mock-drawer-header">待办列表</div>
-              <div class="mock-drawer-tabs">
-                <div class="mock-drawer-tab active">待处理</div>
-                <div class="mock-drawer-tab">已完成</div>
-              </div>
-              <div class="mock-todo-item">
-                <div>
-                  <div class="mock-todo-title">React 文档</div>
-                  <div class="mock-todo-time">3小时前</div>
-                </div>
-                <div class="mock-todo-actions">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </div>
-              </div>
-              <div class="mock-todo-item">
-                <div>
-                  <div class="mock-todo-title">CSS Grid 指南</div>
-                  <div class="mock-todo-time">1天前</div>
-                </div>
-                <div class="mock-todo-actions">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </div>
-              </div>
-              <div class="mock-todo-item">
-                <div>
-                  <div class="mock-todo-title">TypeScript Handbook</div>
-                  <div class="mock-todo-time">2天前</div>
-                </div>
-                <div class="mock-todo-actions">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                </div>
+          <div class="mockup-body" style="padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+            <div class="mock-ext-icon">
+              <div class="mock-badge">
+                <img src="icons/icon-128.png" alt="标签管理">
               </div>
             </div>
+            <p style="margin-top: 16px; font-size: 13px; color: var(--color-fg-muted); text-align: center; line-height: 1.5;">当存在重复页面时<br>图标右下角显示重复数量</p>
           </div>
         </div>
-        <p class="mockup-caption">待办抽屉 — 收藏稍后阅读的标签页</p>
+        <p class="mockup-caption">扩展图标角标 — 一眼看到重复数量</p>
       </div>
     </div>
   </section>
 
   <!-- Install — detailed -->
-  <section class="section">
+  <section class="section" id="install">
     <h2 class="section-title">安装方法</h2>
     <div class="steps">
 
@@ -959,27 +1004,28 @@
         <div class="step-number">1</div>
         <div class="step-content">
           <h4>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            打开终端
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载项目代码
           </h4>
-          <p>你需要通过终端（命令行）来下载项目代码。不同操作系统打开方式如下：</p>
+          <p><strong>方式一：直接下载 ZIP</strong>（最简单，无需终端，无需安装 Git）</p>
+          <ul class="sub-steps">
+            <li>前往项目的 GitHub 页面：<a href="https://github.com/yixin68/tab-manager" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: underline;">github.com/yixin68/tab-manager</a></li>
+            <li>点击绿色的 <strong>Code</strong> 按钮</li>
+            <li>选择 <strong>Download ZIP</strong></li>
+            <li>将下载的 ZIP 文件解压到你喜欢的位置</li>
+          </ul>
+          <div class="tip-box info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>GitHub 页面需要外网访问。如果没有外网，请使用方式二通过 Git 克隆。</span>
+          </div>
+          <p><strong>方式二：使用 Git 克隆</strong>（方便后续更新）</p>
+          <p>首先打开终端：</p>
           <ul class="sub-steps">
             <li><strong>macOS</strong>：按 <code>Command + 空格</code> 打开 Spotlight，输入 <code>Terminal</code> 并回车；或在「应用程序 > 实用工具」中找到「终端」</li>
             <li><strong>Windows</strong>：按 <code>Win + R</code>，输入 <code>cmd</code> 并回车；或在开始菜单搜索「命令提示符」或「PowerShell」</li>
             <li><strong>Linux</strong>：按 <code>Ctrl + Alt + T</code> 打开终端，或在应用菜单中搜索「Terminal」</li>
           </ul>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h4>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            下载项目代码
-          </h4>
-          <p><strong>方式一：使用 Git 克隆</strong>（推荐，方便后续更新）</p>
-          <p>在终端中逐行执行以下命令：</p>
+          <p>然后在终端中逐行执行以下命令：</p>
           <div class="code-block">
             <span class="comment"># 检查是否已安装 Git</span><br>
             <span class="prompt">$</span> <span class="cmd">git --version</span><br><br>
@@ -990,34 +1036,25 @@
             <span class="comment"># 进入项目目录</span><br>
             <span class="prompt">$</span> <span class="cmd">cd tab-manager</span>
           </div>
-          <p><strong>方式二：直接下载 ZIP</strong>（无需安装 Git）</p>
-          <ul class="sub-steps">
-            <li>前往项目的 GitHub 页面</li>
-            <li>点击绿色的 <strong>Code</strong> 按钮</li>
-            <li>选择 <strong>Download ZIP</strong></li>
-            <li>将下载的 ZIP 文件解压到你喜欢的位置</li>
-          </ul>
         </div>
       </div>
 
       <div class="step">
-        <div class="step-number">3</div>
+        <div class="step-number">2</div>
         <div class="step-content">
           <h4>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             打开 Chrome 扩展管理页
           </h4>
-          <p>在 Chrome 浏览器中，有三种方式进入扩展管理页面：</p>
+          <p>在 Chrome 浏览器中：</p>
           <ul class="sub-steps">
-            <li>在地址栏输入 <code>chrome://extensions</code> 并回车</li>
-            <li>点击浏览器右上角 <code>⋮</code> 菜单 >「扩展程序」>「管理扩展程序」</li>
             <li>点击浏览器右上角拼图图标，在弹出菜单底部点击「管理扩展程序」</li>
           </ul>
         </div>
       </div>
 
       <div class="step">
-        <div class="step-number">4</div>
+        <div class="step-number">3</div>
         <div class="step-content">
           <h4>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1032,7 +1069,7 @@
       </div>
 
       <div class="step">
-        <div class="step-number">5</div>
+        <div class="step-number">4</div>
         <div class="step-content">
           <h4>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -1054,7 +1091,7 @@
   </section>
 
   <!-- Usage guide — updated -->
-  <section class="section">
+  <section class="section" id="guide">
     <h2 class="section-title">使用指南</h2>
     <div class="steps">
 
@@ -1128,7 +1165,7 @@
   </section>
 
   <!-- Keyboard shortcuts -->
-  <section class="section">
+  <section class="section" id="shortcuts">
     <h2 class="section-title">键盘快捷键</h2>
     <div class="shortcut-grid">
       <div class="shortcut-item">
@@ -1146,23 +1183,28 @@
     </div>
   </section>
 
-  <!-- Extension badge -->
-  <section class="section">
-    <h2 class="section-title">扩展图标角标</h2>
-    <div style="text-align: center; padding: 20px 0;">
-      <div class="mock-ext-icon">
-        <div class="mock-badge">
-          <img src="icons/icon-128.png" alt="标签管理">
-        </div>
-        <span style="font-size: 13px; color: var(--color-fg-muted);">当存在重复页面时，图标右下角显示重复数量</span>
-      </div>
-    </div>
-  </section>
-
   <!-- Footer -->
   <div class="footer">
     <p>标签管理 — 让浏览器保持整洁</p>
   </div>
+
+  <script>
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    function updateActiveNav() {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 80) current = s.id;
+      });
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
+  </script>
 
 </body>
 </html>
