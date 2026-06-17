@@ -37,7 +37,6 @@ function computeDuplicates(tabs) {
 
 function renderTabs() {
   const tabList = document.getElementById('tab-list');
-  const emptyState = document.getElementById('empty-state');
   const noResults = document.getElementById('no-results');
   const tabCount = document.getElementById('tab-count');
 
@@ -49,12 +48,9 @@ function renderTabs() {
 
   if (allTabs.length === 0) {
     tabList.innerHTML = '';
-    emptyState.hidden = false;
     noResults.hidden = true;
     return;
   }
-
-  emptyState.hidden = true;
 
   const windowGroups = {};
   allTabs.forEach(t => {
