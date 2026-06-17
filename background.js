@@ -12,7 +12,7 @@ function updateBadge() {
 
     if (dupCount > 0) {
       chrome.action.setBadgeText({ text: String(dupCount) });
-      chrome.action.setBadgeBackgroundColor({ color: '#ef4444' });
+      chrome.action.setBadgeBackgroundColor({ color: '#b89060' });
     } else {
       chrome.action.setBadgeText({ text: '' });
     }
