@@ -12,11 +12,11 @@
   --color-border: #d9d2c6;
   --color-border-focus: #b8a88a;
   --color-duplicate: #c4944a;
-  --color-duplicate-bg: #faf3e6;
-  --color-duplicate-border: #d4ad5e;
+  --color-duplicate-bg: #fdf8f0;
+  --color-duplicate-border: #e4ce9a;
   --color-duplicate-cross: #7b8fa8;
-  --color-duplicate-cross-bg: #eef2f7;
-  --color-duplicate-cross-border: #a8bdd0;
+  --color-duplicate-cross-bg: #f3f6f9;
+  --color-duplicate-cross-border: #c0cedb;
   --color-success: #7a9e6b;
   --color-success-bg: #eef4eb;
   --color-danger: #b8706a;
@@ -206,7 +206,7 @@ body {
   content: '';
   position: absolute;
   top: 0; left: 0; bottom: 0;
-  width: 3px;
+  width: 2px;
   background: transparent;
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   transition: background var(--duration-fast);
@@ -275,9 +275,10 @@ body {
 }
 
 .dup-badge {
-  font-size: var(--text-xs);
-  padding: 1px 7px; border-radius: var(--radius-full);
+  font-size: 10px;
+  padding: 0 5px; border-radius: var(--radius-full);
   font-weight: var(--font-medium);
+  line-height: 16px;
 }
 .dup-badge-window {
   color: var(--color-duplicate);
