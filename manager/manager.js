@@ -147,7 +147,11 @@ function updateTodoBadge() {
 // === Tab Actions ===
 
 function closeTab(tabId, rowEl) {
-  if (rowEl) rowEl.classList.add('closing');
+  if (rowEl) {
+    const rect = rowEl.getBoundingClientRect();
+    bloomFlower(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    rowEl.classList.add('closing');
+  }
   setTimeout(() => {
     chrome.tabs.remove(tabId);
   }, 200);
@@ -191,7 +195,11 @@ function closeDuplicatesInWindow(windowId) {
 
   toClose.forEach(id => {
     const row = document.querySelector(`.tab-row[data-tab-id="${id}"]`);
-    if (row) row.classList.add('closing');
+    if (row) {
+      const rect = row.getBoundingClientRect();
+      bloomFlower(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      row.classList.add('closing');
+    }
   });
 
   setTimeout(() => {
@@ -266,6 +274,45 @@ function timeAgo(timestamp) {
   if (hours < 24) return `${hours}小时前`;
   const days = Math.floor(hours / 24);
   return `${days}天前`;
+}
+
+// === Flower Bloom ===
+
+const PETAL_COLORS = ['#f9a8d4', '#fda4af', '#fdba74', '#fde68a', '#c4b5fd'];
+
+function bloomFlower(x, y) {
+  const container = document.getElementById('flower-container');
+  const petalCount = 6 + Math.floor(Math.random() * 3); // 6-8 petals
+
+  for (let i = 0; i < petalCount; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+
+    const angle = (i / petalCount) * 360 + (Math.random() * 30 - 15);
+    const spread = 20 + Math.random() * 30;
+    const dx = Math.cos(angle * Math.PI / 180) * spread;
+    const dy = Math.sin(angle * Math.PI / 180) * spread - 10;
+
+    const color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
+    const delay = Math.random() * 40;
+    const rotation = 180 + Math.random() * 180;
+
+    petal.style.cssText = `
+      left: ${x}px;
+      top: ${y}px;
+      background: ${color};
+      --angle: ${rotation}deg;
+      --dx: ${dx}px;
+      --dy: ${dy}px;
+      animation-delay: ${delay}ms, ${600 + delay}ms;
+    `;
+
+    petal.addEventListener('animationend', (e) => {
+      if (e.animationName === 'petal-drift') petal.remove();
+    });
+
+    container.appendChild(petal);
+  }
 }
 
 // === Init ===

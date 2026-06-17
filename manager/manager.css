@@ -311,3 +311,24 @@ body {
 .todo-item-btn.delete:hover { color: var(--color-danger); background: var(--color-danger-bg); }
 .todo-item-btn:focus-visible { outline: 2px solid var(--color-border-focus); outline-offset: 1px; }
 .todo-item.status-done .todo-item-title { text-decoration: line-through; color: var(--color-fg-subtle); }
+
+/* === Flower Bloom === */
+.petal {
+  width: 8px;
+  height: 12px;
+  border-radius: 50% 0 50% 50%;
+  position: absolute;
+  pointer-events: none;
+  animation: petal-bloom 600ms ease-out forwards,
+             petal-drift 400ms ease-in 600ms forwards;
+}
+
+@keyframes petal-bloom {
+  0%   { transform: scale(0) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1) rotate(var(--angle)); opacity: 1; }
+}
+
+@keyframes petal-drift {
+  0%   { transform: translate(0, 0) rotate(var(--angle)); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(calc(var(--angle) + 90deg)); opacity: 0; }
+}
