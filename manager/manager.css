@@ -222,15 +222,15 @@ body {
   background: var(--dup-color, var(--color-duplicate-border));
 }
 .tab-card.duplicate.dup-window {
-  background: var(--color-duplicate-bg);
-  border-color: var(--color-duplicate-border);
+  background: #fdfaf5;
+  border-color: #e8dcc8;
 }
 .tab-card.duplicate.dup-cross {
-  background: var(--color-duplicate-cross-bg);
-  border-color: var(--color-duplicate-cross-border);
+  background: #f7f8fa;
+  border-color: #d5dbe3;
 }
 .tab-card.duplicate.dup-cross::before {
-  background: var(--dup-color, var(--color-duplicate-cross-border));
+  background: var(--dup-color, #c5d0db);
 }
 
 .tab-card-header {
@@ -275,20 +275,19 @@ body {
 }
 
 .dup-badge {
-  font-size: 10px;
-  padding: 0 5px; border-radius: var(--radius-full);
+  font-size: 9px;
+  padding: 0 4px; border-radius: var(--radius-full);
   font-weight: var(--font-medium);
-  line-height: 16px;
+  line-height: 14px;
+  border: none;
 }
 .dup-badge-window {
-  color: var(--color-duplicate);
-  background: var(--color-duplicate-bg);
-  border: 1px solid var(--color-duplicate-border);
+  color: #b89060;
+  background: #faf5ec;
 }
 .dup-badge-cross {
-  color: var(--color-duplicate-cross);
-  background: var(--color-duplicate-cross-bg);
-  border: 1px solid var(--color-duplicate-cross-border);
+  color: #8a9aaa;
+  background: #f2f5f8;
 }
 
 .tab-actions {
