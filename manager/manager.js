@@ -92,23 +92,29 @@ function renderTabs() {
 
       let favicon = '';
       if (tab.favIconUrl && !tab.url.startsWith('chrome://')) {
-        favicon = `<img class="tab-favicon" src="${escapeHtml(tab.favIconUrl)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tab-favicon-placeholder" style="display:none">${getFirstLetter(tab.title)}</div>`;
+        favicon = `<img class="tab-favicon" src="${escapeHtml(tab.favIconUrl)}" alt="" data-fallback><div class="tab-favicon-placeholder" style="display:none">${getFirstLetter(tab.title)}</div>`;
       } else {
         favicon = `<div class="tab-favicon-placeholder">${getFirstLetter(tab.title)}</div>`;
       }
 
-      html += `<div class="tab-row${isDup ? ' duplicate' : ''}" data-tab-id="${tab.id}" style="--dup-color:${dupColor}" tabindex="0" role="listitem" aria-label="标签页: ${escapeHtml(tab.title)}, ${escapeHtml(tab.url)}">`;
+      html += `<div class="tab-card${isDup ? ' duplicate' : ''}" data-tab-id="${tab.id}" style="--dup-color:${dupColor}" tabindex="0" role="listitem" aria-label="标签页: ${escapeHtml(tab.title)}, ${escapeHtml(tab.url)}">`;
+      html += `<div class="tab-card-header">`;
       html += favicon;
       html += `<div class="tab-info" data-action="activate-tab" data-tab-id="${tab.id}">`;
       html += `<div class="tab-title" title="${escapeHtml(tab.title)}">${escapeHtml(tab.title)}</div>`;
       html += `<div class="tab-url">${escapeHtml(tab.url)}</div>`;
       html += `</div>`;
+      html += `</div>`;
+      html += `<div class="tab-card-footer">`;
       if (isDup) {
         html += `<span class="dup-badge">重复×${dupCount}</span>`;
+      } else {
+        html += `<span></span>`;
       }
       html += `<div class="tab-actions">`;
       html += `<button class="tab-action-btn todo-btn" data-action="save-todo" data-tab-id="${tab.id}" aria-label="存为待办" title="存为待办">📌</button>`;
       html += `<button class="tab-action-btn close-btn" data-action="close-tab" data-tab-id="${tab.id}" aria-label="关闭" title="关闭">✕</button>`;
+      html += `</div>`;
       html += `</div>`;
       html += `</div>`;
     });
@@ -172,7 +178,7 @@ function saveToTodo(tabId) {
   todoItems.unshift(item);
   chrome.storage.local.set({ todoItems });
 
-  closeTab(tabId, document.querySelector(`.tab-row[data-tab-id="${tabId}"]`));
+  closeTab(tabId, document.querySelector(`.tab-card[data-tab-id="${tabId}"]`));
   showToast('已添加到待办');
   updateTodoBadge();
   if (drawerOpen) renderTodoList();
@@ -194,7 +200,7 @@ function closeDuplicatesInWindow(windowId) {
   if (toClose.length === 0) return;
 
   toClose.forEach(id => {
-    const row = document.querySelector(`.tab-row[data-tab-id="${id}"]`);
+    const row = document.querySelector(`.tab-card[data-tab-id="${id}"]`);
     if (row) {
       const rect = row.getBoundingClientRect();
       bloomFlower(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -340,6 +346,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Favicon error fallback (can't use inline onerror due to MV3 CSP)
+  document.getElementById('tab-list').addEventListener('error', (e) => {
+    const img = e.target;
+    if (img.classList.contains('tab-favicon') && img.dataset.fallback !== undefined) {
+      img.style.display = 'none';
+      const placeholder = img.nextElementSibling;
+      if (placeholder) placeholder.style.display = 'flex';
+    }
+  }, true);
+
   // Event delegation for tab actions
   document.getElementById('tab-list').addEventListener('click', (e) => {
     const target = e.target.closest('[data-action]');
@@ -355,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tab = allTabs.find(t => t.id === tabId);
       if (tab) chrome.windows.update(tab.windowId, { focused: true });
     } else if (action === 'close-tab') {
-      closeTab(tabId, target.closest('.tab-row'));
+      closeTab(tabId, target.closest('.tab-card'));
     } else if (action === 'save-todo') {
       saveToTodo(tabId);
     } else if (action === 'close-duplicates') {
@@ -365,7 +381,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Keyboard navigation on tab rows
   document.getElementById('tab-list').addEventListener('keydown', (e) => {
-    const row = e.target.closest('.tab-row');
+    const row = e.target.closest('.tab-card');
     if (!row) return;
     const tabId = parseInt(row.dataset.tabId);
 
@@ -395,11 +411,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     drawerOpen = !drawerOpen;
     todoDrawer.hidden = !drawerOpen;
     todoToggle.setAttribute('aria-expanded', drawerOpen);
-    todoToggle.textContent = drawerOpen ? '收起' : '待办';
+    document.getElementById('todo-toggle-text').textContent = drawerOpen ? '收起' : '待办';
     if (drawerOpen) {
       updateTodoBadge();
       const badge = document.getElementById('todo-badge');
-      todoToggle.appendChild(badge);
+      if (badge) todoToggle.appendChild(badge);
       renderTodoList();
     }
   });
