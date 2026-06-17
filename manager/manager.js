@@ -37,7 +37,6 @@ function computeDuplicates(tabs) {
 
 function renderTabs() {
   const tabList = document.getElementById('tab-list');
-  const noResults = document.getElementById('no-results');
   const tabCount = document.getElementById('tab-count');
 
   const managerUrl = chrome.runtime.getURL('manager/manager.html');
@@ -48,7 +47,6 @@ function renderTabs() {
 
   if (allTabs.length === 0) {
     tabList.innerHTML = '';
-    noResults.hidden = true;
     return;
   }
 
@@ -139,7 +137,6 @@ function renderTabs() {
   }
 
   tabList.innerHTML = html;
-  noResults.hidden = hasResults;
   updateTodoBadge();
 }
 
@@ -254,7 +251,7 @@ function showToast(message, duration = 2000) {
 function renderTodoList() {
   const list = document.getElementById('todo-list');
   const todoEmpty = document.getElementById('todo-empty');
-  const doneEmpty = document.getElementById('done-empty');
+  const emptyText = todoEmpty.querySelector('.empty-text');
   const clearDoneBtn = document.getElementById('clear-done');
 
   const filtered = todoItems.filter(i =>
@@ -266,13 +263,12 @@ function renderTodoList() {
 
   if (filtered.length === 0) {
     list.innerHTML = '';
-    todoEmpty.hidden = todoActiveTab !== 'todo';
-    doneEmpty.hidden = todoActiveTab !== 'done';
+    emptyText.textContent = todoActiveTab === 'todo' ? '无待办事项' : '无已完成项';
+    todoEmpty.hidden = false;
     return;
   }
 
   todoEmpty.hidden = true;
-  doneEmpty.hidden = true;
 
   list.innerHTML = filtered.map(item => `
     <div class="todo-item${item.status === 'done' ? ' status-done' : ''}" data-todo-id="${item.id}">
