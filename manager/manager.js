@@ -217,6 +217,57 @@ function showToast(message, duration = 2000) {
   }, duration);
 }
 
+// === Todo List ===
+
+function renderTodoList() {
+  const list = document.getElementById('todo-list');
+  const todoEmpty = document.getElementById('todo-empty');
+  const doneEmpty = document.getElementById('done-empty');
+  const clearDoneBtn = document.getElementById('clear-done');
+
+  const filtered = todoItems.filter(i =>
+    todoActiveTab === 'todo' ? i.status === 'todo' : i.status === 'done'
+  );
+
+  const doneCount = todoItems.filter(i => i.status === 'done').length;
+  clearDoneBtn.hidden = todoActiveTab !== 'done' || doneCount === 0;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '';
+    todoEmpty.hidden = todoActiveTab !== 'todo';
+    doneEmpty.hidden = todoActiveTab !== 'done';
+    return;
+  }
+
+  todoEmpty.hidden = true;
+  doneEmpty.hidden = true;
+
+  list.innerHTML = filtered.map(item => `
+    <div class="todo-item${item.status === 'done' ? ' status-done' : ''}" data-todo-id="${item.id}">
+      <div class="todo-item-info">
+        <div class="todo-item-title" data-action="reopen-todo" data-todo-id="${item.id}" title="${escapeHtml(item.url)}">${escapeHtml(item.title)}</div>
+        <div class="todo-item-time">${timeAgo(item.createdAt)}</div>
+      </div>
+      <div class="todo-item-actions">
+        <button class="todo-item-btn reopen" data-action="reopen-todo" data-todo-id="${item.id}" aria-label="重新打开" title="重新打开">↗</button>
+        <button class="todo-item-btn done" data-action="mark-done" data-todo-id="${item.id}" aria-label="标记完成" title="标记完成">✓</button>
+        <button class="todo-item-btn delete" data-action="delete-todo" data-todo-id="${item.id}" aria-label="删除" title="删除">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function timeAgo(timestamp) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return '刚刚';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}分钟前`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}小时前`;
+  const days = Math.floor(hours / 24);
+  return `${days}天前`;
+}
+
 // === Init ===
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -280,6 +331,72 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         saveToTodo(tabId);
       }
+    }
+  });
+
+  // Load todo items from storage
+  chrome.storage.local.get('todoItems', (data) => {
+    todoItems = data.todoItems || [];
+    updateTodoBadge();
+  });
+
+  // Todo drawer toggle
+  const todoToggle = document.getElementById('todo-toggle');
+  const todoDrawer = document.getElementById('todo-drawer');
+
+  todoToggle.addEventListener('click', () => {
+    drawerOpen = !drawerOpen;
+    todoDrawer.hidden = !drawerOpen;
+    todoToggle.setAttribute('aria-expanded', drawerOpen);
+    todoToggle.textContent = drawerOpen ? '收起' : '待办';
+    if (drawerOpen) {
+      updateTodoBadge();
+      const badge = document.getElementById('todo-badge');
+      todoToggle.appendChild(badge);
+      renderTodoList();
+    }
+  });
+
+  // Drawer tab switching
+  document.querySelectorAll('.drawer-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      todoActiveTab = tab.dataset.tab;
+      document.querySelectorAll('.drawer-tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === todoActiveTab));
+      renderTodoList();
+    });
+  });
+
+  // Clear done button
+  document.getElementById('clear-done').addEventListener('click', () => {
+    todoItems = todoItems.filter(i => i.status !== 'done');
+    chrome.storage.local.set({ todoItems });
+    renderTodoList();
+  });
+
+  // Todo item actions delegation
+  document.getElementById('todo-list').addEventListener('click', (e) => {
+    const target = e.target.closest('[data-action]');
+    if (!target) return;
+
+    const action = target.dataset.action;
+    const todoId = target.dataset.todoId;
+    const item = todoItems.find(i => i.id === todoId);
+    if (!item) return;
+
+    if (action === 'reopen-todo') {
+      chrome.tabs.create({ url: item.url });
+      showToast('已在新标签页打开', 1500);
+    } else if (action === 'mark-done') {
+      item.status = item.status === 'done' ? 'todo' : 'done';
+      chrome.storage.local.set({ todoItems });
+      renderTodoList();
+      updateTodoBadge();
+      if (item.status === 'done') showToast('已标记完成', 1500);
+    } else if (action === 'delete-todo') {
+      todoItems = todoItems.filter(i => i.id !== todoId);
+      chrome.storage.local.set({ todoItems });
+      renderTodoList();
+      updateTodoBadge();
     }
   });
 
