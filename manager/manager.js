@@ -282,4 +282,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
   });
+
+  // Search
+  const searchInput = document.getElementById('search-input');
+  const searchClear = document.getElementById('search-clear');
+  let searchTimer = null;
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      searchQuery = searchInput.value.trim();
+      searchClear.hidden = !searchQuery;
+      renderTabs();
+    }, 150);
+  });
+
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    searchClear.hidden = true;
+    renderTabs();
+    searchInput.focus();
+  });
 });
