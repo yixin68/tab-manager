@@ -21,6 +21,7 @@
       --color-success: #7a9e6b;
       --color-success-bg: #eef4eb;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "SF Mono", "Fira Code", "Cascadia Code", "Menlo", monospace;
       --radius-md: 10px;
       --radius-lg: 14px;
       --shadow-card: 0 2px 8px rgb(61 56 50 / 0.07), 0 1px 2px rgb(61 56 50 / 0.04);
@@ -75,11 +76,16 @@
       letter-spacing: -0.01em;
     }
 
-    /* Feature grid */
+    /* Feature grid — 3 columns */
     .feature-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    @media (max-width: 640px) {
+      .feature-grid { grid-template-columns: 1fr; max-width: 360px; }
     }
     .feature-card {
       background: var(--color-card);
@@ -94,9 +100,17 @@
       transform: translateY(-2px);
     }
     .feature-icon {
-      font-size: 32px;
+      width: 40px; height: 40px;
       margin-bottom: 14px;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-accent-light);
+      border-radius: var(--radius-md);
+      color: var(--color-accent);
+    }
+    .feature-icon svg {
+      width: 22px; height: 22px;
     }
     .feature-card h3 {
       font-size: 16px;
@@ -179,6 +193,9 @@
     }
     .mock-search svg { flex-shrink: 0; }
     .mock-todo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       font-size: 12px;
       padding: 4px 10px;
       background: var(--color-bg);
@@ -186,6 +203,7 @@
       border-radius: 6px;
       color: var(--color-fg);
     }
+    .mock-todo-btn svg { width: 12px; height: 12px; }
 
     /* Mockup: cards */
     .mock-window-label {
@@ -290,9 +308,11 @@
     }
     .mock-actions {
       display: flex;
-      gap: 4px;
-      font-size: 11px;
+      gap: 6px;
       color: var(--color-fg-subtle);
+    }
+    .mock-actions svg {
+      width: 12px; height: 12px;
     }
 
     /* Mockup: todo drawer */
@@ -338,7 +358,8 @@
     .mock-todo-item:last-child { border-bottom: none; }
     .mock-todo-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .mock-todo-time { font-size: 10px; color: var(--color-fg-subtle); }
-    .mock-todo-actions { display: flex; gap: 4px; font-size: 12px; color: var(--color-fg-subtle); flex-shrink: 0; margin-left: 8px; }
+    .mock-todo-actions { display: flex; gap: 8px; color: var(--color-fg-subtle); flex-shrink: 0; margin-left: 8px; }
+    .mock-todo-actions svg { width: 12px; height: 12px; }
 
     /* Mockup: popup */
     .mock-popup {
@@ -418,48 +439,12 @@
       padding: 0 4px;
     }
 
-    /* Flower animation mockup */
-    .mock-flower {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .petal-demo {
-      position: relative;
-      width: 60px; height: 60px;
-    }
-    .petal-demo .p {
-      position: absolute;
-      width: 8px; height: 12px;
-      border-radius: 50% 0 50% 50%;
-      left: 50%; top: 50%;
-      animation: demo-bloom 2s ease-out infinite;
-    }
-    .petal-demo .p:nth-child(1) { background: #f9a8d4; --a: 0deg; --d: 16px; animation-delay: 0s; }
-    .petal-demo .p:nth-child(2) { background: #fda4af; --a: 60deg; --d: 18px; animation-delay: 0.1s; }
-    .petal-demo .p:nth-child(3) { background: #fdba74; --a: 120deg; --d: 14px; animation-delay: 0.05s; }
-    .petal-demo .p:nth-child(4) { background: #fde68a; --a: 180deg; --d: 17px; animation-delay: 0.15s; }
-    .petal-demo .p:nth-child(5) { background: #c4b5fd; --a: 240deg; --d: 15px; animation-delay: 0.08s; }
-    .petal-demo .p:nth-child(6) { background: #f9a8d4; --a: 300deg; --d: 16px; animation-delay: 0.12s; }
-    @keyframes demo-bloom {
-      0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-      30%  { transform: translate(-50%, -50%) scale(1) rotate(calc(var(--a) + 180deg)); opacity: 1; }
-      60%  { transform: translate(
-               calc(-50% + cos(var(--a)) * var(--d)),
-               calc(-50% + sin(var(--a)) * var(--d))
-             ) rotate(calc(var(--a) + 270deg)); opacity: 0.8; }
-      100% { transform: translate(
-               calc(-50% + cos(var(--a)) * var(--d) * 1.3),
-               calc(-50% + sin(var(--a)) * var(--d) * 1.3 - 8px)
-             ) rotate(calc(var(--a) + 360deg)); opacity: 0; }
-    }
-
     /* Install steps */
     .steps {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      max-width: 600px;
+      gap: 24px;
+      max-width: 640px;
       margin: 0 auto;
     }
     .step {
@@ -480,15 +465,28 @@
       font-weight: 600;
       color: var(--color-accent);
     }
+    .step-content {
+      flex: 1;
+    }
     .step-content h4 {
       font-size: 15px;
       font-weight: 600;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-content h4 svg {
+      width: 18px; height: 18px;
+      color: var(--color-accent);
+      flex-shrink: 0;
     }
     .step-content p {
       font-size: 14px;
       color: var(--color-fg-muted);
+      margin-bottom: 4px;
     }
+    .step-content p:last-child { margin-bottom: 0; }
     .step-content code {
       background: var(--color-bg);
       border: 1px solid var(--color-border);
@@ -497,6 +495,105 @@
       font-size: 13px;
       color: var(--color-accent);
     }
+
+    /* Terminal code block */
+    .code-block {
+      background: #2d2a26;
+      color: #e8e1d4;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .code-block .prompt {
+      color: #b89060;
+      user-select: none;
+    }
+    .code-block .comment {
+      color: #7a7368;
+    }
+    .code-block .cmd {
+      color: #e8e1d4;
+    }
+
+    /* Tip/callout box */
+    .tip-box {
+      background: var(--color-accent-light);
+      border: 1px solid #e4ce9a;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--color-fg-muted);
+      margin: 10px 0 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .tip-box svg {
+      width: 16px; height: 16px;
+      color: var(--color-accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .tip-box strong {
+      color: var(--color-accent);
+    }
+    .tip-box.info {
+      background: var(--color-info-bg);
+      border-color: #c0cedb;
+    }
+    .tip-box.info svg { color: var(--color-info); }
+    .tip-box.info strong { color: var(--color-info); }
+
+    /* Sub-steps within a step */
+    .sub-steps {
+      margin-top: 6px;
+      padding-left: 0;
+      list-style: none;
+      counter-reset: substep;
+    }
+    .sub-steps li {
+      font-size: 14px;
+      color: var(--color-fg-muted);
+      padding: 4px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .sub-steps li::before {
+      counter-increment: substep;
+      content: counter(substep) ".";
+      font-weight: 600;
+      color: var(--color-accent);
+      flex-shrink: 0;
+    }
+
+    /* OS tabs */
+    .os-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .os-tab {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      background: var(--color-bg);
+      color: var(--color-fg-muted);
+      cursor: pointer;
+    }
+    .os-tab.active {
+      background: var(--color-accent-light);
+      border-color: #e4ce9a;
+      color: var(--color-accent);
+    }
+    .os-content { display: none; }
+    .os-content.active { display: block; }
 
     /* Keyboard shortcuts */
     .shortcut-grid {
@@ -524,6 +621,7 @@
       padding: 2px 8px;
       white-space: nowrap;
       color: var(--color-accent);
+      font-family: var(--font-mono);
     }
     .shortcut-desc {
       font-size: 13px;
@@ -563,39 +661,38 @@
     <p>一目了然管理浏览器标签页，智能检测重复，告别标签混乱</p>
   </section>
 
-  <!-- Features -->
+  <!-- Features — only 3 core features -->
   <section class="section">
     <h2 class="section-title">核心功能</h2>
     <div class="feature-grid">
       <div class="feature-card">
-        <span class="feature-icon">🗂</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </div>
         <h3>卡片式总览</h3>
         <p>所有标签按窗口分组，以卡片流形式展示。标题、网址、图标一目了然，点击即可跳转。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🔍</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="8" width="12" height="12" rx="2"/>
+            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>
+          </svg>
+        </div>
         <h3>智能重复检测</h3>
         <p>自动识别窗口内重复和跨窗口重复，用不同底色区分。一键关闭窗口内重复项，保持浏览器整洁。</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">📌</span>
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
         <h3>待办收藏</h3>
         <p>暂时不看的标签存入待办列表，自动关闭标签页。需要时一键重新打开，支持标记完成和删除。</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🌸</span>
-        <h3>花朵绽放动效</h3>
-        <p>关闭标签页时花朵绽放，告别枯燥的消失动画。每一片花瓣都带随机颜色和飘散轨迹。</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🔎</span>
-        <h3>即时搜索</h3>
-        <p>输入关键词即时过滤标签页，支持标题和网址搜索，快速定位目标标签。</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🔢</span>
-        <h3>扩展图标角标</h3>
-        <p>扩展图标上实时显示重复页面数量，无需打开管理页就能感知重复情况。</p>
       </div>
     </div>
   </section>
@@ -617,10 +714,13 @@
             <span class="mock-header-count">(8)</span>
           </div>
           <div class="mock-search">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             搜索标签...
           </div>
-          <div class="mock-todo-btn">待办</div>
+          <div class="mock-todo-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            待办
+          </div>
         </div>
 
         <div class="mock-window-label">
@@ -638,7 +738,10 @@
             </div>
             <div class="mock-card-footer">
               <span class="mock-dup-badge window">窗口内×2</span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card dup-window">
@@ -651,7 +754,10 @@
             </div>
             <div class="mock-card-footer">
               <span class="mock-dup-badge window">窗口内×2</span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card dup-cross">
@@ -664,7 +770,10 @@
             </div>
             <div class="mock-card-footer">
               <span class="mock-dup-badge cross">跨2个窗口重复</span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card">
@@ -677,7 +786,10 @@
             </div>
             <div class="mock-card-footer">
               <span></span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card">
@@ -690,7 +802,10 @@
             </div>
             <div class="mock-card-footer">
               <span></span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
         </div>
@@ -709,7 +824,10 @@
             </div>
             <div class="mock-card-footer">
               <span class="mock-dup-badge cross">跨2个窗口重复</span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card">
@@ -722,7 +840,10 @@
             </div>
             <div class="mock-card-footer">
               <span></span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
           <div class="mock-card">
@@ -735,7 +856,10 @@
             </div>
             <div class="mock-card-footer">
               <span></span>
-              <div class="mock-actions">📌 ✕</div>
+              <div class="mock-actions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
             </div>
           </div>
         </div>
@@ -790,21 +914,33 @@
                   <div class="mock-todo-title">React 文档</div>
                   <div class="mock-todo-time">3小时前</div>
                 </div>
-                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+                <div class="mock-todo-actions">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </div>
               </div>
               <div class="mock-todo-item">
                 <div>
                   <div class="mock-todo-title">CSS Grid 指南</div>
                   <div class="mock-todo-time">1天前</div>
                 </div>
-                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+                <div class="mock-todo-actions">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </div>
               </div>
               <div class="mock-todo-item">
                 <div>
                   <div class="mock-todo-title">TypeScript Handbook</div>
                   <div class="mock-todo-time">2天前</div>
                 </div>
-                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+                <div class="mock-todo-actions">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </div>
               </div>
             </div>
           </div>
@@ -814,104 +950,180 @@
     </div>
   </section>
 
-  <!-- Duplicate detection -->
-  <section class="section">
-    <h2 class="section-title">重复检测说明</h2>
-    <div class="feature-grid">
-      <div class="feature-card" style="border-left: 3px solid #e4ce9a; background: #fdfaf5;">
-        <span class="feature-icon">🟡</span>
-        <h3>窗口内重复</h3>
-        <p>同一个窗口内打开了多条相同网址的标签页。暖黄色底色标识，点击窗口旁的「关闭重复项」即可一键清理，只保留一条。</p>
-      </div>
-      <div class="feature-card" style="border-left: 3px solid #c5d0db; background: #f7f8fa;">
-        <span class="feature-icon">🔵</span>
-        <h3>跨窗口重复</h3>
-        <p>不同窗口中存在相同网址的标签页。蓝灰色底色标识，提醒你在其他窗口中已有此页面，方便手动切换或关闭。</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Install -->
+  <!-- Install — detailed -->
   <section class="section">
     <h2 class="section-title">安装方法</h2>
     <div class="steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h4>下载源码</h4>
-          <p>将项目代码克隆到本地：<code>git clone &lt;repo-url&gt;</code></p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h4>打开扩展管理页</h4>
-          <p>在 Chrome 地址栏输入 <code>chrome://extensions</code>，进入扩展管理页面。</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h4>开启开发者模式</h4>
-          <p>点击页面右上角的「开发者模式」开关，将其打开。</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h4>加载扩展</h4>
-          <p>点击左上角「加载已解压的扩展程序」，选择项目根目录文件夹即可完成安装。</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Usage -->
-  <section class="section">
-    <h2 class="section-title">使用指南</h2>
-    <div class="steps">
       <div class="step">
         <div class="step-number">1</div>
         <div class="step-content">
-          <h4>打开标签管理</h4>
-          <p>点击浏览器工具栏中的扩展图标，在弹窗中点击「打开标签管理」进入完整管理页面。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            打开终端
+          </h4>
+          <p>你需要通过终端（命令行）来下载项目代码。不同操作系统打开方式如下：</p>
+          <ul class="sub-steps">
+            <li><strong>macOS</strong>：按 <code>Command + 空格</code> 打开 Spotlight，输入 <code>Terminal</code> 并回车；或在「应用程序 > 实用工具」中找到「终端」</li>
+            <li><strong>Windows</strong>：按 <code>Win + R</code>，输入 <code>cmd</code> 并回车；或在开始菜单搜索「命令提示符」或「PowerShell」</li>
+            <li><strong>Linux</strong>：按 <code>Ctrl + Alt + T</code> 打开终端，或在应用菜单中搜索「Terminal」</li>
+          </ul>
         </div>
       </div>
+
       <div class="step">
         <div class="step-number">2</div>
         <div class="step-content">
-          <h4>浏览与跳转</h4>
-          <p>标签页按窗口分组展示为卡片流。点击卡片标题区域即可跳转到对应标签页并激活窗口。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            下载项目代码
+          </h4>
+          <p><strong>方式一：使用 Git 克隆</strong>（推荐，方便后续更新）</p>
+          <p>在终端中逐行执行以下命令：</p>
+          <div class="code-block">
+            <span class="comment"># 检查是否已安装 Git</span><br>
+            <span class="prompt">$</span> <span class="cmd">git --version</span><br><br>
+            <span class="comment"># 如果未安装，macOS 会提示安装 Xcode Command Line Tools，按提示操作即可</span><br>
+            <span class="comment"># Windows 请前往 https://git-scm.com 下载安装 Git</span><br><br>
+            <span class="comment"># 克隆项目到本地</span><br>
+            <span class="prompt">$</span> <span class="cmd">git clone https://github.com/your-username/tab-manager.git</span><br><br>
+            <span class="comment"># 进入项目目录</span><br>
+            <span class="prompt">$</span> <span class="cmd">cd tab-manager</span>
+          </div>
+          <p><strong>方式二：直接下载 ZIP</strong>（无需安装 Git）</p>
+          <ul class="sub-steps">
+            <li>前往项目的 GitHub 页面</li>
+            <li>点击绿色的 <strong>Code</strong> 按钮</li>
+            <li>选择 <strong>Download ZIP</strong></li>
+            <li>将下载的 ZIP 文件解压到你喜欢的位置</li>
+          </ul>
         </div>
       </div>
+
       <div class="step">
         <div class="step-number">3</div>
         <div class="step-content">
-          <h4>关闭标签页</h4>
-          <p>悬停卡片时出现操作按钮，点击 ✕ 关闭标签页，会伴随花朵绽放动效。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            打开 Chrome 扩展管理页
+          </h4>
+          <p>在 Chrome 浏览器中，有三种方式进入扩展管理页面：</p>
+          <ul class="sub-steps">
+            <li>在地址栏输入 <code>chrome://extensions</code> 并回车</li>
+            <li>点击浏览器右上角 <code>⋮</code> 菜单 >「扩展程序」>「管理扩展程序」</li>
+            <li>点击浏览器右上角拼图图标，在弹出菜单底部点击「管理扩展程序」</li>
+          </ul>
         </div>
       </div>
+
       <div class="step">
         <div class="step-number">4</div>
         <div class="step-content">
-          <h4>存为待办</h4>
-          <p>点击 📌 将标签页存入待办列表并自动关闭。点击右上角「待办」按钮打开待办抽屉，可重新打开、标记完成或删除。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            开启开发者模式
+          </h4>
+          <p>在扩展管理页面的<strong>右上角</strong>，找到「开发者模式」开关，将其<strong>打开</strong>。开启后，页面顶部会出现一行新的操作按钮。</p>
+          <div class="tip-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Chrome 不支持直接安装 .crx 扩展包，开发者模式是加载本地扩展的唯一方式。此模式仅影响你手动加载的扩展，不会影响 Chrome 的安全性。</span>
+          </div>
         </div>
       </div>
+
       <div class="step">
         <div class="step-number">5</div>
         <div class="step-content">
-          <h4>清理重复项</h4>
-          <p>窗口内存在重复时，窗口标题旁会出现「关闭重复项」按钮，点击一键清理。跨窗口重复以蓝灰色标识，需手动处理。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            加载扩展
+          </h4>
+          <ul class="sub-steps">
+            <li>点击页面<strong>左上角</strong>出现的「加载已解压的扩展程序」按钮</li>
+            <li>在弹出的文件选择器中，找到并选中你刚才克隆或解压的 <code>tab-manager</code> 文件夹（即包含 <code>manifest.json</code> 的那个目录）</li>
+            <li>点击「选择文件夹」，Chrome 会自动加载扩展</li>
+          </ul>
+          <div class="tip-box info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>加载成功后，Chrome 工具栏会出现扩展图标。如果没看到，点击工具栏右侧的拼图图标，将「标签管理」固定到工具栏即可。</span>
+          </div>
         </div>
       </div>
+
+    </div>
+  </section>
+
+  <!-- Usage guide — updated -->
+  <section class="section">
+    <h2 class="section-title">使用指南</h2>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            打开标签管理
+          </h4>
+          <p>点击浏览器工具栏中的扩展图标，在弹窗中可以看到当前标签数和重复数。点击弹窗中的「打开标签管理」按钮，进入完整的管理页面。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            浏览与跳转
+          </h4>
+          <p>标签页按窗口分组展示为卡片流。点击卡片上的标题区域即可跳转到对应标签页，浏览器会自动切换到该窗口并激活标签。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            清理重复项
+          </h4>
+          <p>当窗口内存在重复标签时，窗口标题旁会出现「关闭重复项」按钮，点击即可一键清理，保留第一条，关闭其余重复标签。<strong>暖黄色底色</strong>表示窗口内重复，<strong>蓝灰色底色</strong>表示跨窗口重复。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            存为待办
+          </h4>
+          <p>悬停卡片时出现操作按钮，点击书签图标可将标签页存入待办列表并自动关闭该标签。点击右上角「待办」按钮打开待办抽屉，可重新打开、标记完成或删除待办项。</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            搜索过滤
+          </h4>
+          <p>在顶部搜索框输入关键词，即时过滤匹配的标签页，支持按标题和网址搜索。</p>
+        </div>
+      </div>
+
       <div class="step">
         <div class="step-number">6</div>
         <div class="step-content">
-          <h4>搜索过滤</h4>
-          <p>在顶部搜索框输入关键词，即时过滤匹配的标签页（支持标题和网址搜索）。</p>
+          <h4>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            关闭标签页
+          </h4>
+          <p>悬停卡片时点击关闭图标即可关闭标签页，会伴随花朵绽放动效。</p>
         </div>
       </div>
+
     </div>
   </section>
 
