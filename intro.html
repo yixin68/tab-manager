@@ -570,6 +570,67 @@
     .tip-box.info svg { color: var(--color-info); }
     .tip-box.info strong { color: var(--color-info); }
 
+    /* Method choice cards */
+    .method-choice {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .method-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .method-card h5 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-fg);
+    }
+    .method-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 8px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .method-tag.easy {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+    .method-tag.update {
+      background: var(--color-info-bg);
+      color: var(--color-info);
+    }
+    .method-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .method-card ul li::before {
+      content: '·';
+      margin-right: 6px;
+      color: var(--color-fg-subtle);
+    }
+    .method-card .tip-box {
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .method-card .code-block {
+      font-size: 12px;
+      margin-top: 8px;
+      padding: 10px 12px;
+    }
+    @media (max-width: 720px) {
+      .method-choice { grid-template-columns: 1fr; }
+    }
+
     /* Sub-steps within a step */
     .sub-steps {
       margin-top: 6px;
@@ -1007,34 +1068,29 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             下载项目代码
           </h4>
-          <p><strong>方式一：直接下载 ZIP</strong>（最简单，无需终端，无需安装 Git）</p>
-          <ul class="sub-steps">
-            <li>前往项目的 GitHub 页面：<a href="https://github.com/yixin68/tab-manager" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: underline;">github.com/yixin68/tab-manager</a></li>
-            <li>点击绿色的 <strong>Code</strong> 按钮</li>
-            <li>选择 <strong>Download ZIP</strong></li>
-            <li>将下载的 ZIP 文件解压到你喜欢的位置</li>
-          </ul>
-          <div class="tip-box info">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span>GitHub 页面需要外网访问。如果没有外网，请使用方式二通过 Git 克隆。</span>
-          </div>
-          <p><strong>方式二：使用 Git 克隆</strong>（方便后续更新）</p>
-          <p>首先打开终端：</p>
-          <ul class="sub-steps">
-            <li><strong>macOS</strong>：按 <code>Command + 空格</code> 打开 Spotlight，输入 <code>Terminal</code> 并回车；或在「应用程序 > 实用工具」中找到「终端」</li>
-            <li><strong>Windows</strong>：按 <code>Win + R</code>，输入 <code>cmd</code> 并回车；或在开始菜单搜索「命令提示符」或「PowerShell」</li>
-            <li><strong>Linux</strong>：按 <code>Ctrl + Alt + T</code> 打开终端，或在应用菜单中搜索「Terminal」</li>
-          </ul>
-          <p>然后在终端中逐行执行以下命令：</p>
-          <div class="code-block">
-            <span class="comment"># 检查是否已安装 Git</span><br>
-            <span class="prompt">$</span> <span class="cmd">git --version</span><br><br>
-            <span class="comment"># 如果未安装，macOS 会提示安装 Xcode Command Line Tools，按提示操作即可</span><br>
-            <span class="comment"># Windows 请前往 https://git-scm.com 下载安装 Git</span><br><br>
-            <span class="comment"># 克隆项目到本地</span><br>
-            <span class="prompt">$</span> <span class="cmd">git clone https://github.com/yixin68/tab-manager.git</span><br><br>
-            <span class="comment"># 进入项目目录</span><br>
-            <span class="prompt">$</span> <span class="cmd">cd tab-manager</span>
+          <p>选择其中一种方式即可：</p>
+          <div class="method-choice">
+            <div class="method-card">
+              <h5>直接下载 ZIP <span class="method-tag easy">推荐</span></h5>
+              <ul>
+                <li>前往 <a href="https://github.com/yixin68/tab-manager" target="_blank" rel="noopener" style="color: var(--color-accent); text-decoration: underline;">GitHub 项目页面</a></li>
+                <li>点击绿色的 <strong>Code</strong> 按钮</li>
+                <li>选择 <strong>Download ZIP</strong></li>
+                <li>解压到任意位置</li>
+              </ul>
+              <div class="tip-box info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span>需要外网访问 GitHub。如无外网，请使用右侧 Git 克隆方式。</span>
+              </div>
+            </div>
+            <div class="method-card">
+              <h5>Git 克隆 <span class="method-tag update">方便更新</span></h5>
+              <p style="font-size: 13px; margin: 0 0 6px;">打开终端（macOS: <code>⌘+空格</code> 输入 Terminal；Windows: <code>Win+R</code> 输入 cmd），执行：</p>
+              <div class="code-block">
+                <span class="prompt">$</span> <span class="cmd">git clone https://github.com/yixin68/tab-manager.git</span><br>
+                <span class="prompt">$</span> <span class="cmd">cd tab-manager</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
