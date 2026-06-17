@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>标签管理 - Chrome 扩展介绍</title>
+  <style>
+    :root {
+      --color-bg: #f5f0e8;
+      --color-card: #faf7f2;
+      --color-fg: #3d3832;
+      --color-fg-muted: #7a7368;
+      --color-fg-subtle: #a69e93;
+      --color-border: #d9d2c6;
+      --color-accent: #b89060;
+      --color-accent-light: #faf3e6;
+      --color-info: #8a9eb8;
+      --color-info-bg: #edf1f5;
+      --color-danger: #b8706a;
+      --color-danger-bg: #f5ebe9;
+      --color-success: #7a9e6b;
+      --color-success-bg: #eef4eb;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-card: 0 2px 8px rgb(61 56 50 / 0.07), 0 1px 2px rgb(61 56 50 / 0.04);
+      --shadow-card-hover: 0 8px 24px rgb(61 56 50 / 0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      line-height: 1.7;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      background: linear-gradient(180deg, #faf7f2 0%, #f5f0e8 100%);
+    }
+    .hero-icon {
+      width: 96px; height: 96px;
+      border-radius: 24px;
+      box-shadow: 0 4px 16px rgb(61 56 50 / 0.12);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--color-fg-muted);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+
+    /* Feature grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 200ms, transform 200ms;
+    }
+    .feature-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+    }
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--color-fg-muted);
+      line-height: 1.6;
+    }
+
+    /* Screenshot mockups */
+    .mockup-container {
+      margin: 40px 0;
+    }
+    .mockup {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .mockup-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: #faf7f2;
+    }
+    .mockup-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .mockup-dot.red { background: #f5c0b8; }
+    .mockup-dot.yellow { background: #fde68a; }
+    .mockup-dot.green { background: #bbf7d0; }
+    .mockup-body {
+      padding: 20px;
+    }
+    .mockup-caption {
+      text-align: center;
+      font-size: 13px;
+      color: var(--color-fg-subtle);
+      margin-top: -16px;
+      margin-bottom: 32px;
+    }
+
+    /* Mockup: header bar */
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--color-card);
+      border-bottom: 1px solid var(--color-border);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      margin: -20px -20px 16px;
+    }
+    .mock-header-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .mock-header-count {
+      font-size: 12px;
+      color: var(--color-fg-subtle);
+    }
+    .mock-search {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 99px;
+      font-size: 12px;
+      color: var(--color-fg-subtle);
+      background: var(--color-bg);
+    }
+    .mock-search svg { flex-shrink: 0; }
+    .mock-todo-btn {
+      font-size: 12px;
+      padding: 4px 10px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      color: var(--color-fg);
+    }
+
+    /* Mockup: cards */
+    .mock-window-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-fg-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mock-dup-btn {
+      font-size: 10px;
+      color: var(--color-accent);
+      background: var(--color-accent-light);
+      border: 1px solid #e4ce9a;
+      border-radius: 99px;
+      padding: 2px 8px;
+    }
+    .mock-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .mock-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+    }
+    .mock-card.dup-window {
+      background: #fdfaf5;
+      border-color: #e8dcc8;
+      border-left: 2px solid #f59e0b;
+    }
+    .mock-card.dup-cross {
+      background: #f7f8fa;
+      border-color: #d5dbe3;
+      border-left: 2px solid #06b6d4;
+    }
+    .mock-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .mock-favicon {
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .mock-favicon-placeholder {
+      width: 16px; height: 16px;
+      border-radius: 3px;
+      background: var(--color-bg);
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--color-fg-muted);
+    }
+    .mock-card-info { flex: 1; min-width: 0; }
+    .mock-card-title {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mock-card-url {
+      font-size: 10px;
+      color: var(--color-fg-subtle);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mock-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mock-dup-badge {
+      font-size: 9px;
+      padding: 0 5px;
+      line-height: 14px;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+    .mock-dup-badge.window {
+      color: #b89060;
+      background: #faf5ec;
+    }
+    .mock-dup-badge.cross {
+      color: #8a9aaa;
+      background: #f2f5f8;
+    }
+    .mock-actions {
+      display: flex;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--color-fg-subtle);
+    }
+
+    /* Mockup: todo drawer */
+    .mock-drawer {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      max-width: 320px;
+    }
+    .mock-drawer-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .mock-drawer-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .mock-drawer-tab {
+      flex: 1;
+      padding: 8px 16px;
+      font-size: 12px;
+      text-align: center;
+      border: none;
+      background: none;
+      color: var(--color-fg-muted);
+      border-bottom: 2px solid transparent;
+    }
+    .mock-drawer-tab.active {
+      color: var(--color-info);
+      border-bottom-color: var(--color-info);
+    }
+    .mock-todo-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 12px;
+    }
+    .mock-todo-item:last-child { border-bottom: none; }
+    .mock-todo-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mock-todo-time { font-size: 10px; color: var(--color-fg-subtle); }
+    .mock-todo-actions { display: flex; gap: 4px; font-size: 12px; color: var(--color-fg-subtle); flex-shrink: 0; margin-left: 8px; }
+
+    /* Mockup: popup */
+    .mock-popup {
+      width: 220px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: 16px;
+      margin: 0 auto;
+    }
+    .mock-popup-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .mock-popup-stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .mock-stat {
+      flex: 1;
+      text-align: center;
+    }
+    .mock-stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-info);
+    }
+    .mock-stat-label {
+      font-size: 11px;
+      color: var(--color-fg-subtle);
+    }
+    .mock-popup-btn {
+      width: 100%;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: #a89a80;
+      border: none;
+      border-radius: 6px;
+    }
+
+    /* Mockup: badge on extension icon */
+    .mock-ext-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-card);
+    }
+    .mock-ext-icon img { width: 28px; height: 28px; }
+    .mock-badge {
+      position: relative;
+      display: inline-block;
+    }
+    .mock-badge::after {
+      content: '3';
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--color-accent);
+      border-radius: 99px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    /* Flower animation mockup */
+    .mock-flower {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .petal-demo {
+      position: relative;
+      width: 60px; height: 60px;
+    }
+    .petal-demo .p {
+      position: absolute;
+      width: 8px; height: 12px;
+      border-radius: 50% 0 50% 50%;
+      left: 50%; top: 50%;
+      animation: demo-bloom 2s ease-out infinite;
+    }
+    .petal-demo .p:nth-child(1) { background: #f9a8d4; --a: 0deg; --d: 16px; animation-delay: 0s; }
+    .petal-demo .p:nth-child(2) { background: #fda4af; --a: 60deg; --d: 18px; animation-delay: 0.1s; }
+    .petal-demo .p:nth-child(3) { background: #fdba74; --a: 120deg; --d: 14px; animation-delay: 0.05s; }
+    .petal-demo .p:nth-child(4) { background: #fde68a; --a: 180deg; --d: 17px; animation-delay: 0.15s; }
+    .petal-demo .p:nth-child(5) { background: #c4b5fd; --a: 240deg; --d: 15px; animation-delay: 0.08s; }
+    .petal-demo .p:nth-child(6) { background: #f9a8d4; --a: 300deg; --d: 16px; animation-delay: 0.12s; }
+    @keyframes demo-bloom {
+      0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+      30%  { transform: translate(-50%, -50%) scale(1) rotate(calc(var(--a) + 180deg)); opacity: 1; }
+      60%  { transform: translate(
+               calc(-50% + cos(var(--a)) * var(--d)),
+               calc(-50% + sin(var(--a)) * var(--d))
+             ) rotate(calc(var(--a) + 270deg)); opacity: 0.8; }
+      100% { transform: translate(
+               calc(-50% + cos(var(--a)) * var(--d) * 1.3),
+               calc(-50% + sin(var(--a)) * var(--d) * 1.3 - 8px)
+             ) rotate(calc(var(--a) + 360deg)); opacity: 0; }
+    }
+
+    /* Install steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-accent-light);
+      border: 1px solid #e4ce9a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+    .step-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 14px;
+      color: var(--color-fg-muted);
+    }
+    .step-content code {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--color-accent);
+    }
+
+    /* Keyboard shortcuts */
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .shortcut-key {
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      white-space: nowrap;
+      color: var(--color-accent);
+    }
+    .shortcut-desc {
+      font-size: 13px;
+      color: var(--color-fg-muted);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--color-border);
+      margin-top: 40px;
+    }
+    .footer p {
+      font-size: 13px;
+      color: var(--color-fg-subtle);
+    }
+
+    /* Two-col layout for certain sections */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <img src="icons/icon-128.png" alt="标签管理" class="hero-icon">
+    <h1>标签管理</h1>
+    <p>一目了然管理浏览器标签页，智能检测重复，告别标签混乱</p>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <h2 class="section-title">核心功能</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🗂</span>
+        <h3>卡片式总览</h3>
+        <p>所有标签按窗口分组，以卡片流形式展示。标题、网址、图标一目了然，点击即可跳转。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔍</span>
+        <h3>智能重复检测</h3>
+        <p>自动识别窗口内重复和跨窗口重复，用不同底色区分。一键关闭窗口内重复项，保持浏览器整洁。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📌</span>
+        <h3>待办收藏</h3>
+        <p>暂时不看的标签存入待办列表，自动关闭标签页。需要时一键重新打开，支持标记完成和删除。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🌸</span>
+        <h3>花朵绽放动效</h3>
+        <p>关闭标签页时花朵绽放，告别枯燥的消失动画。每一片花瓣都带随机颜色和飘散轨迹。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔎</span>
+        <h3>即时搜索</h3>
+        <p>输入关键词即时过滤标签页，支持标题和网址搜索，快速定位目标标签。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔢</span>
+        <h3>扩展图标角标</h3>
+        <p>扩展图标上实时显示重复页面数量，无需打开管理页就能感知重复情况。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screenshot: Main interface -->
+  <section class="section">
+    <h2 class="section-title">界面预览</h2>
+
+    <div class="mockup">
+      <div class="mockup-titlebar">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mock-header">
+          <div>
+            <span class="mock-header-title">标签管理</span>
+            <span class="mock-header-count">(8)</span>
+          </div>
+          <div class="mock-search">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            搜索标签...
+          </div>
+          <div class="mock-todo-btn">待办</div>
+        </div>
+
+        <div class="mock-window-label">
+          ▼ 窗口 1 (5个标签)
+          <span class="mock-dup-btn">关闭重复项</span>
+        </div>
+        <div class="mock-card-grid">
+          <div class="mock-card dup-window">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">G</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">Google</div>
+                <div class="mock-card-url">google.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span class="mock-dup-badge window">窗口内×2</span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card dup-window">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">G</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">Google</div>
+                <div class="mock-card-url">google.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span class="mock-dup-badge window">窗口内×2</span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card dup-cross">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">Y</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">YouTube</div>
+                <div class="mock-card-url">youtube.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span class="mock-dup-badge cross">跨2个窗口重复</span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">G</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">GitHub</div>
+                <div class="mock-card-url">github.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span></span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">M</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">MDN Web Docs</div>
+                <div class="mock-card-url">developer.mozilla.org</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span></span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mock-window-label">
+          ▼ 窗口 2 (3个标签)
+        </div>
+        <div class="mock-card-grid">
+          <div class="mock-card dup-cross">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">Y</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">YouTube</div>
+                <div class="mock-card-url">youtube.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span class="mock-dup-badge cross">跨2个窗口重复</span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">D</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">Dribbble</div>
+                <div class="mock-card-url">dribbble.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span></span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+          <div class="mock-card">
+            <div class="mock-card-head">
+              <div class="mock-favicon-placeholder">F</div>
+              <div class="mock-card-info">
+                <div class="mock-card-title">Figma</div>
+                <div class="mock-card-url">figma.com</div>
+              </div>
+            </div>
+            <div class="mock-card-footer">
+              <span></span>
+              <div class="mock-actions">📌 ✕</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="mockup-caption">主界面 — 卡片流布局，暖黄色标记窗口内重复，蓝灰色标记跨窗口重复</p>
+
+    <div class="two-col">
+      <div>
+        <div class="mockup">
+          <div class="mockup-titlebar">
+            <div class="mockup-dot red"></div>
+            <div class="mockup-dot yellow"></div>
+            <div class="mockup-dot green"></div>
+          </div>
+          <div class="mockup-body" style="padding: 16px;">
+            <div class="mock-popup">
+              <div class="mock-popup-title">标签管理</div>
+              <div class="mock-popup-stats">
+                <div class="mock-stat">
+                  <div class="mock-stat-value">12</div>
+                  <div class="mock-stat-label">打开的标签</div>
+                </div>
+                <div class="mock-stat">
+                  <div class="mock-stat-value">3</div>
+                  <div class="mock-stat-label">重复页面</div>
+                </div>
+              </div>
+              <button class="mock-popup-btn">打开标签管理</button>
+            </div>
+          </div>
+        </div>
+        <p class="mockup-caption">弹窗入口 — 快速查看标签数与重复数</p>
+      </div>
+
+      <div>
+        <div class="mockup">
+          <div class="mockup-titlebar">
+            <div class="mockup-dot red"></div>
+            <div class="mockup-dot yellow"></div>
+            <div class="mockup-dot green"></div>
+          </div>
+          <div class="mockup-body" style="padding: 16px;">
+            <div class="mock-drawer">
+              <div class="mock-drawer-header">待办列表</div>
+              <div class="mock-drawer-tabs">
+                <div class="mock-drawer-tab active">待处理</div>
+                <div class="mock-drawer-tab">已完成</div>
+              </div>
+              <div class="mock-todo-item">
+                <div>
+                  <div class="mock-todo-title">React 文档</div>
+                  <div class="mock-todo-time">3小时前</div>
+                </div>
+                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+              </div>
+              <div class="mock-todo-item">
+                <div>
+                  <div class="mock-todo-title">CSS Grid 指南</div>
+                  <div class="mock-todo-time">1天前</div>
+                </div>
+                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+              </div>
+              <div class="mock-todo-item">
+                <div>
+                  <div class="mock-todo-title">TypeScript Handbook</div>
+                  <div class="mock-todo-time">2天前</div>
+                </div>
+                <div class="mock-todo-actions">↗ ✓ 🗑</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="mockup-caption">待办抽屉 — 收藏稍后阅读的标签页</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Duplicate detection -->
+  <section class="section">
+    <h2 class="section-title">重复检测说明</h2>
+    <div class="feature-grid">
+      <div class="feature-card" style="border-left: 3px solid #e4ce9a; background: #fdfaf5;">
+        <span class="feature-icon">🟡</span>
+        <h3>窗口内重复</h3>
+        <p>同一个窗口内打开了多条相同网址的标签页。暖黄色底色标识，点击窗口旁的「关闭重复项」即可一键清理，只保留一条。</p>
+      </div>
+      <div class="feature-card" style="border-left: 3px solid #c5d0db; background: #f7f8fa;">
+        <span class="feature-icon">🔵</span>
+        <h3>跨窗口重复</h3>
+        <p>不同窗口中存在相同网址的标签页。蓝灰色底色标识，提醒你在其他窗口中已有此页面，方便手动切换或关闭。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="section">
+    <h2 class="section-title">安装方法</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>下载源码</h4>
+          <p>将项目代码克隆到本地：<code>git clone &lt;repo-url&gt;</code></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>打开扩展管理页</h4>
+          <p>在 Chrome 地址栏输入 <code>chrome://extensions</code>，进入扩展管理页面。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>开启开发者模式</h4>
+          <p>点击页面右上角的「开发者模式」开关，将其打开。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>加载扩展</h4>
+          <p>点击左上角「加载已解压的扩展程序」，选择项目根目录文件夹即可完成安装。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Usage -->
+  <section class="section">
+    <h2 class="section-title">使用指南</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>打开标签管理</h4>
+          <p>点击浏览器工具栏中的扩展图标，在弹窗中点击「打开标签管理」进入完整管理页面。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>浏览与跳转</h4>
+          <p>标签页按窗口分组展示为卡片流。点击卡片标题区域即可跳转到对应标签页并激活窗口。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>关闭标签页</h4>
+          <p>悬停卡片时出现操作按钮，点击 ✕ 关闭标签页，会伴随花朵绽放动效。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>存为待办</h4>
+          <p>点击 📌 将标签页存入待办列表并自动关闭。点击右上角「待办」按钮打开待办抽屉，可重新打开、标记完成或删除。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h4>清理重复项</h4>
+          <p>窗口内存在重复时，窗口标题旁会出现「关闭重复项」按钮，点击一键清理。跨窗口重复以蓝灰色标识，需手动处理。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">6</div>
+        <div class="step-content">
+          <h4>搜索过滤</h4>
+          <p>在顶部搜索框输入关键词，即时过滤匹配的标签页（支持标题和网址搜索）。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Keyboard shortcuts -->
+  <section class="section">
+    <h2 class="section-title">键盘快捷键</h2>
+    <div class="shortcut-grid">
+      <div class="shortcut-item">
+        <span class="shortcut-key">Enter</span>
+        <span class="shortcut-desc">跳转到标签页</span>
+      </div>
+      <div class="shortcut-item">
+        <span class="shortcut-key">Delete</span>
+        <span class="shortcut-desc">关闭标签页</span>
+      </div>
+      <div class="shortcut-item">
+        <span class="shortcut-key">S</span>
+        <span class="shortcut-desc">存为待办</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Extension badge -->
+  <section class="section">
+    <h2 class="section-title">扩展图标角标</h2>
+    <div style="text-align: center; padding: 20px 0;">
+      <div class="mock-ext-icon">
+        <div class="mock-badge">
+          <img src="icons/icon-128.png" alt="标签管理">
+        </div>
+        <span style="font-size: 13px; color: var(--color-fg-muted);">当存在重复页面时，图标右上角显示重复数量</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>标签管理 — 让浏览器保持整洁</p>
+  </div>
+
+</body>
+</html>
