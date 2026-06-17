@@ -112,8 +112,8 @@ function renderTabs() {
         html += `<span></span>`;
       }
       html += `<div class="tab-actions">`;
-      html += `<button class="tab-action-btn todo-btn" data-action="save-todo" data-tab-id="${tab.id}" aria-label="存为待办" title="存为待办">📌</button>`;
-      html += `<button class="tab-action-btn close-btn" data-action="close-tab" data-tab-id="${tab.id}" aria-label="关闭" title="关闭">✕</button>`;
+      html += `<button class="tab-action-btn todo-btn" data-action="save-todo" data-tab-id="${tab.id}" aria-label="存为待办" title="存为待办，并关闭标签页">📌</button>`;
+      html += `<button class="tab-action-btn close-btn" data-action="close-tab" data-tab-id="${tab.id}" aria-label="关闭标签页" title="关闭标签页">✕</button>`;
       html += `</div>`;
       html += `</div>`;
       html += `</div>`;
@@ -185,7 +185,9 @@ function saveToTodo(tabId) {
 }
 
 function closeDuplicatesInWindow(windowId) {
-  const windowTabs = allTabs.filter(t => t.windowId === windowId);
+  // windowId may be string from data attribute, normalize to number
+  const wid = Number(windowId);
+  const windowTabs = allTabs.filter(t => t.windowId === wid);
   const seen = {};
   const toClose = [];
 
@@ -358,24 +360,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Event delegation for tab actions
   document.getElementById('tab-list').addEventListener('click', (e) => {
+    // Check closest action element — buttons inside other action containers
+    // (e.g. close-dup-btn inside window-header) must match themselves first
     const target = e.target.closest('[data-action]');
     if (!target) return;
 
     const action = target.dataset.action;
-    const tabId = parseInt(target.dataset.tabId);
 
-    if (action === 'toggle-window') {
+    if (action === 'close-duplicates') {
+      e.stopPropagation();
+      closeDuplicatesInWindow(parseInt(target.dataset.windowId));
+    } else if (action === 'toggle-window') {
       target.closest('.window-group').classList.toggle('collapsed');
     } else if (action === 'activate-tab') {
+      const tabId = parseInt(target.dataset.tabId);
       chrome.tabs.update(tabId, { active: true });
       const tab = allTabs.find(t => t.id === tabId);
       if (tab) chrome.windows.update(tab.windowId, { focused: true });
     } else if (action === 'close-tab') {
-      closeTab(tabId, target.closest('.tab-card'));
+      closeTab(parseInt(target.dataset.tabId), target.closest('.tab-card'));
     } else if (action === 'save-todo') {
-      saveToTodo(tabId);
-    } else if (action === 'close-duplicates') {
-      closeDuplicatesInWindow(parseInt(target.dataset.windowId));
+      saveToTodo(parseInt(target.dataset.tabId));
     }
   });
 

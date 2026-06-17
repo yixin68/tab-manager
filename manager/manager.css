@@ -321,6 +321,29 @@ body {
 .flower-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: var(--z-confetti); overflow: hidden; }
 .toast-container { position: fixed; bottom: var(--space-6); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: var(--space-2); z-index: var(--z-toast); }
 
+.toast {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-fg);
+  color: var(--color-card);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--duration-normal) var(--easing-default),
+              transform var(--duration-normal) var(--easing-default);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast-exit {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 /* === Todo Item === */
 .todo-item {
   display: flex; align-items: center; gap: var(--space-2);
