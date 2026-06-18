@@ -339,6 +339,49 @@
       width: 12px; height: 12px;
     }
 
+    /* Demo animation: close duplicates */
+    .demo-mockup .mock-dup-btn {
+      animation: demo-btn-pulse 6s ease infinite;
+    }
+    @keyframes demo-btn-pulse {
+      0%, 30% { box-shadow: none; transform: none; }
+      36%, 46% {
+        box-shadow: 0 0 0 4px rgba(196, 148, 74, 0.25);
+        transform: scale(1.08);
+      }
+      52%, 100% { box-shadow: none; transform: none; }
+    }
+    .demo-mockup .mock-card.demo-dup {
+      animation: demo-card-close 6s ease infinite;
+    }
+    @keyframes demo-card-close {
+      0%, 45% { opacity: 1; transform: scale(1); }
+      52% { opacity: 0; transform: scale(0.85); }
+      53%, 82% { opacity: 0; transform: scale(0.85); max-height: 0; padding: 0; margin: 0; border-width: 0; overflow: hidden; }
+      83% { opacity: 0; transform: scale(0.85); max-height: 999px; padding: 10px; margin: 0; border-width: 1px; }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    /* Demo flower petals */
+    .demo-petals {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .demo-petal {
+      position: absolute;
+      width: 6px;
+      height: 9px;
+      border-radius: 50% 0 50% 50%;
+      opacity: 0;
+      animation: demo-petal-bloom 6s ease infinite;
+    }
+    @keyframes demo-petal-bloom {
+      0%, 47% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(var(--angle)); }
+      55% { opacity: 1; transform: translate(var(--dx), var(--dy)) rotate(calc(var(--angle) + 80deg)); }
+      58%, 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(calc(var(--angle) + 80deg)); }
+    }
+
     /* Mockup: todo drawer */
     .mock-drawer {
       background: var(--color-card);
@@ -841,7 +884,7 @@
   <section class="section" id="preview">
     <h2 class="section-title">界面预览</h2>
 
-    <div class="mockup">
+    <div class="mockup demo-mockup">
       <div class="mockup-titlebar">
         <div class="mockup-dot red"></div>
         <div class="mockup-dot yellow"></div>
@@ -884,7 +927,14 @@
               </div>
             </div>
           </div>
-          <div class="mock-card dup-window">
+          <div class="mock-card dup-window demo-dup">
+            <div class="demo-petals" style="left:50%;top:50%">
+              <div class="demo-petal" style="left:0;top:0;background:#f9a8d4;--angle:30deg;--dx:12px;--dy:-14px"></div>
+              <div class="demo-petal" style="left:0;top:0;background:#fda4af;--angle:90deg;--dx:16px;--dy:4px"></div>
+              <div class="demo-petal" style="left:0;top:0;background:#fde68a;--angle:150deg;--dx:-4px;--dy:16px"></div>
+              <div class="demo-petal" style="left:0;top:0;background:#c4b5fd;--angle:210deg;--dx:-14px;--dy:-6px"></div>
+              <div class="demo-petal" style="left:0;top:0;background:#fdba74;--angle:300deg;--dx:6px;--dy:-16px"></div>
+            </div>
             <div class="mock-card-head">
               <div class="mock-favicon-placeholder">G</div>
               <div class="mock-card-info">
@@ -1005,7 +1055,7 @@
         </div>
       </div>
     </div>
-    <p class="mockup-caption">主界面 — 卡片流布局，暖黄色标记窗口内重复，蓝灰色标记跨窗口重复</p>
+    <p class="mockup-caption">主界面 — 点击「关闭重复项」一键清理，重复标签消失并绽放花朵</p>
 
     <div class="two-col">
       <div>
